@@ -38,6 +38,14 @@ AimGroup:AddInput('AutoAirDelay', {
     Finished = true,
 })
 
+-- Smoothness textbox
+AimGroup:AddInput('Smoothness', {
+    Text = 'Smoothness',
+    Default = '0.5', -- default smoothness
+    Numeric = true,
+    Finished = true,
+})
+
 AimGroup:AddInput('PredictionValue', {
     Text = 'Prediction',
     Default = '0.125',
