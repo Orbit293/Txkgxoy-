@@ -1,0 +1,105 @@
+local repo = 'https://raw.githubusercontent.com/mstudio45/LinoriaLib/main/'
+
+local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
+local ThemeManager = loadstring(game:HttpGet(repo .. 'addons/ThemeManager.lua'))()
+local SaveManager = loadstring(game:HttpGet(repo .. 'addons/SaveManager.lua'))()
+local Options = Library.Options
+local Toggles = Library.Toggles
+
+-- Window
+local Window = Library:CreateWindow({
+    Title = 'gpt.cc',
+    Center = true,
+    AutoShow = true,
+    Resizable = true,
+    ShowCustomCursor = true,
+})
+
+-- Tabs
+local Tabs = {
+    Aiming = Window:AddTab('Aiming'),
+    Visuals = Window:AddTab('Visuals'),
+    ['UI Settings'] = Window:AddTab('UI Settings'),
+}
+
+-- ===== Aiming Tab =====
+local AimGroup = Tabs.Aiming:AddLeftGroupbox('Aiming Features')
+
+AimGroup:AddToggle('AutoPrediction', { Text = 'Auto Prediction', Default = false })
+
+-- Auto Air toggle
+AimGroup:AddToggle('AutoAir', { Text = 'Auto Air', Default = false })
+
+-- Auto Air delay textbox
+AimGroup:AddInput('AutoAirDelay', {
+    Text = 'Auto Air Delay (seconds)',
+    Default = '0.2',  -- default delay
+    Numeric = true,
+    Finished = true,
+})
+
+AimGroup:AddInput('PredictionValue', {
+    Text = 'Prediction',
+    Default = '0.125',
+    Numeric = true,
+    Finished = true,
+})
+
+AimGroup:AddInput('JumpOffset', {
+    Text = 'Jump Offset',
+    Default = '2.5',
+    Numeric = true,
+    Finished = true,
+})
+
+-- ===== Visuals Tab =====
+local VisualGroup = Tabs.Visuals:AddLeftGroupbox('Visuals Features')
+
+VisualGroup:AddToggle('Textures', { Text = 'Textures', Default = true })
+VisualGroup:AddDropdown('MaterialDropdown', {
+    Values = {'Sand', 'Plastic', 'Neon', 'Wood', 'Concrete'},
+    Default = 1,
+    Text = 'Material',
+})
+VisualGroup:AddInput('MaterialColor', {
+    Text = 'Material Color RGB (R,G,B)',
+    Default = '0,255,0',
+})
+VisualGroup:AddLabel('Color Picker'):AddColorPicker('ColorPicker', {
+    Default = Color3.fromRGB(0,255,0),
+    Title = 'Green Theme',
+})
+
+-- ===== UI Settings Tab =====
+local MenuGroup = Tabs['UI Settings']:AddLeftGroupbox('Menu Settings')
+
+MenuGroup:AddToggle("KeybindMenuOpen", {
+    Default = Library.KeybindFrame.Visible,
+    Text = "Open Keybind Menu",
+    Callback = function(value) Library.KeybindFrame.Visible = value end
+})
+MenuGroup:AddToggle("ShowCustomCursor", {
+    Text = "Custom Cursor",
+    Default = true,
+    Callback = function(Value) Library.ShowCustomCursor = Value end
+})
+MenuGroup:AddDivider()
+MenuGroup:AddLabel("Menu Keybind"):AddKeyPicker("MenuKeybind", {
+    Default = "RightShift",
+    NoUI = true,
+    Text = "Menu keybind"
+})
+MenuGroup:AddButton("Unload", function() Library:Unload() end)
+
+-- ===== Save & Theme =====
+ThemeManager:SetLibrary(Library)
+SaveManager:SetLibrary(Library)
+ThemeManager:SetFolder('gpt.cc')
+SaveManager:SetFolder('gpt.cc/specific-game')
+SaveManager:SetSubFolder('specific-place')
+
+-- Build SaveManager/ThemeManager menus inside UI Settings tab
+SaveManager:BuildConfigSection(Tabs['UI Settings'])
+ThemeManager:ApplyToTab(Tabs['UI Settings'])
+
+SaveManager:LoadAutoloadConfig()
